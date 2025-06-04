@@ -1,0 +1,63 @@
+version: '3.8'
+
+services:
+  budget-planner:
+    build: .
+    ports:
+      - "127.0.0.1:8000:8000"  # Only allow local connections
+    volumes:
+      - budget_data:/app/data
+      - backup_data:/app/backups
+      - encryption_keys:/app/keys
+    restart: unless-stopped
+    environment:
+      - TZ=UTC
+      - JWT_SECRET=${JWT_SECRET:-$(openssl rand -hex 32)}  # Generate random JWT secret if not provided
+      - ENCRYPTION_KEY=${ENCRYPTION_KEY:-$(openssl rand -base64 32)}  # Generate random encryption key if not provided
+    security_opt:
+      - no-new-privileges:true
+    # Set resource limits
+    deploy:
+      resources:
+        limits:
+          cpus: '0.50'
+          memory: 512M
+        reservations:
+          cpus: '0.25'
+          memory: 256M
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/healthz"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+volumes:
+  budget_data:
+    driver: local
+    driver_opts:
+      type: none
+      device: ${PWD}/data
+      o: bind
+  backup_data:
+    driver: local
+    driver_opts:
+      type: none
+      device: ${PWD}/backups
+      o: bind
+  encryption_keys:
+    driver: local
+    driver_opts:
+      type: none
+      device: ${PWD}/keys
+      o: bind
+
+networks:
+  default:
+    driver: bridge
+    internal: true  # Prevent container from accessing external networks
