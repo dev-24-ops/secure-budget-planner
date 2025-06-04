@@ -1,0 +1,29 @@
+{
+  "salary": 1000.0,
+  "transactions": [
+    {
+      "id": 1,
+      "date": "2025-06-04",
+      "amount": 10.0,
+      "category": "Needs",
+      "description": "Foods",
+      "created_at": "2025-06-04 08:34:50"
+    },
+    {
+      "id": 2,
+      "date": "2025-06-04",
+      "amount": 10.0,
+      "category": "Wants",
+      "description": "Clothes",
+      "created_at": "2025-06-04 08:34:58"
+    },
+    {
+      "id": 3,
+      "date": "2025-06-04",
+      "amount": 100.0,
+      "category": "Savings",
+      "description": "Life",
+      "created_at": "2025-06-04 08:35:11"
+    }
+  ]
+}
